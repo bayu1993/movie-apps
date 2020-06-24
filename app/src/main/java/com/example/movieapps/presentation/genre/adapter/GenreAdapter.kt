@@ -14,7 +14,7 @@ import kotlin.random.Random
 
 class GenreAdapter(private val callback:(Genre)-> Unit) : RecyclerView.Adapter<GenreAdapter.ViewHolder>(){
 
-    private var listGenre = mutableListOf<Genre>()
+    private val listGenre = mutableListOf<Genre>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_genre,parent,false))
@@ -28,7 +28,7 @@ class GenreAdapter(private val callback:(Genre)-> Unit) : RecyclerView.Adapter<G
         holder.bind(listGenre[position], callback)
     }
 
-    fun addData(data:MutableList<Genre>){
+    fun setData(data:MutableList<Genre>){
         listGenre.clear()
         listGenre.addAll(data)
         notifyDataSetChanged()
@@ -38,7 +38,7 @@ class GenreAdapter(private val callback:(Genre)-> Unit) : RecyclerView.Adapter<G
         val bgCard= mutableListOf("#111d5e","#c70039","#f37121","#2f2519")
         fun bind(genre: Genre, callback: (Genre) -> Unit){
             itemView.tv_genre.text = genre.name
-            itemView.card.setCardBackgroundColor(Color.parseColor(bgCard.random()))
+            //itemView.card.setCardBackgroundColor(Color.parseColor(bgCard.random()))
             itemView.setOnClickListener { callback(genre) }
         }
     }

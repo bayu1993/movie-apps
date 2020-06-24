@@ -1,27 +1,24 @@
 package com.example.movieapps.presentation.genre.view
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.GridLayout
-import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.movieapps.BuildConfig
 import com.example.movieapps.R
 import com.example.movieapps.data.model.Genre
-import com.example.movieapps.data.model.GenreResponse
+import com.example.movieapps.data.response.GenreResponse
 import com.example.movieapps.network.repo.GenreRepo
 import com.example.movieapps.presentation.genre.adapter.GenreAdapter
 import com.example.movieapps.presentation.genre.presenter.GenrePresenter
-import com.example.movieapps.presentation.genre.view.GenreView
+import com.example.movieapps.presentation.movie.view.MovieActivity
+import com.example.movieapps.presentation.movie.view.MovieActivity.Companion.EXTRA_MOVIE
 import com.example.movieapps.utils.gone
 import com.example.movieapps.utils.invisible
 import com.example.movieapps.utils.visible
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), GenreView {
+class MainActivity : AppCompatActivity(), MovieView<GenreResponse> {
 
     private lateinit var adapter: GenreAdapter
     private lateinit var presenter: GenrePresenter
@@ -31,7 +28,10 @@ class MainActivity : AppCompatActivity(), GenreView {
         setContentView(R.layout.activity_main)
 
         adapter = GenreAdapter {
-            Snackbar.make(rv_genre, it.name, Snackbar.LENGTH_SHORT).show()
+            val intent = Intent(this, MovieActivity::class.java)
+            intent.putExtra(EXTRA_MOVIE, it)
+            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(intent)
         }
         presenter = GenrePresenter(this, GenreRepo())
 
@@ -58,6 +58,6 @@ class MainActivity : AppCompatActivity(), GenreView {
     }
 
     override fun onSuccess(data: GenreResponse) {
-        adapter.addData(data.genres as MutableList<Genre>)
+        adapter.setData(data.genres as MutableList<Genre>)
     }
 }

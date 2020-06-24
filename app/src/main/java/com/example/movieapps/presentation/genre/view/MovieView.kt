@@ -1,10 +1,8 @@
 package com.example.movieapps.presentation.genre.view
 
-import com.example.movieapps.data.model.GenreResponse
-
-interface GenreView {
+interface MovieView <T>{
     fun onHide()
     fun onShow()
     fun onError(error: Throwable)
-    fun onSuccess(data: GenreResponse)
+    fun onSuccess(data: T)
 }
