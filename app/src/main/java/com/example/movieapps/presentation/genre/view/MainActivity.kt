@@ -17,22 +17,23 @@ import com.example.movieapps.presentation.genre.view.GenreView
 import com.example.movieapps.utils.gone
 import com.example.movieapps.utils.invisible
 import com.example.movieapps.utils.visible
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), GenreView {
 
     private lateinit var adapter: GenreAdapter
+    private lateinit var presenter: GenrePresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val repo = GenreRepo()
         adapter = GenreAdapter {
-            Toast.makeText(this, it.name, Toast.LENGTH_SHORT).show()
+            Snackbar.make(rv_genre, it.name, Snackbar.LENGTH_SHORT).show()
         }
-        val presenter = GenrePresenter(this, repo)
+        presenter = GenrePresenter(this, GenreRepo())
 
         rv_genre.layoutManager = GridLayoutManager(this, 2)
         rv_genre.adapter = adapter
@@ -51,11 +52,12 @@ class MainActivity : AppCompatActivity(), GenreView {
     }
 
     override fun onError(error: Throwable) {
-        Log.d("movieapps", "movieapps onError >> ${Gson().toJsonTree(error)}")
+        Snackbar.make(rv_genre, "Error : ${error.localizedMessage}", Snackbar.LENGTH_INDEFINITE).setAction("Retry") {
+            presenter.getMovieGenres()
+        }.show()
     }
 
     override fun onSuccess(data: GenreResponse) {
         adapter.addData(data.genres as MutableList<Genre>)
-        Log.d("movieapps", "movieapps onSuccess >> ${Gson().toJsonTree(data)}")
     }
 }

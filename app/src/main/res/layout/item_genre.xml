@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
+    android:id="@+id/card"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -20,11 +21,11 @@
             android:id="@+id/tv_genre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
             android:padding="24dp"
             android:textAlignment="center"
             android:textAllCaps="true"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:textSize="16sp"
             tools:text="Action"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

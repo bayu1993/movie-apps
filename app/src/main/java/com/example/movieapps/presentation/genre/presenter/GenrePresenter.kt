@@ -12,13 +12,14 @@ class GenrePresenter(private val view: GenreView, private val repo: GenreRepo) {
         repo.getMovieGenres(BuildConfig.API_KEY, object : MovieRepoCallback<GenreResponse> {
             override fun onDataLoad(data: GenreResponse) {
                 view.onSuccess(data)
+                view.onShow()
             }
 
             override fun onError(error: Throwable) {
                 view.onError(error)
+                view.onShow()
             }
 
         })
-        view.onShow()
     }
 }
