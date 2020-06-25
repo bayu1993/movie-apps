@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.movieapps.R
 import com.example.movieapps.data.model.Genre
 import com.example.movieapps.data.response.GenreResponse
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity(), MovieView<GenreResponse> {
         }
         presenter = GenrePresenter(this, GenreRepo())
 
-        rv_genre.layoutManager = GridLayoutManager(this, 2)
+        rv_genre.layoutManager = LinearLayoutManager(this)
         rv_genre.adapter = adapter
         presenter.getMovieGenres()
 
