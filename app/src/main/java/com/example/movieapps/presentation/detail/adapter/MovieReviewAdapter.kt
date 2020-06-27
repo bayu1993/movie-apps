@@ -11,7 +11,7 @@ import com.example.movieapps.data.response.Videos
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import kotlinx.android.synthetic.main.item_movie_review.view.*
-import kotlinx.android.synthetic.main.item_video.view.*
+import kotlinx.android.synthetic.main.item_genres.view.*
 
 class MovieReviewAdapter : RecyclerView.Adapter<MovieReviewAdapter.ViewHolder>() {
 
@@ -30,7 +30,6 @@ class MovieReviewAdapter : RecyclerView.Adapter<MovieReviewAdapter.ViewHolder>()
     }
 
     fun setData(data: List<UserReview>) {
-        listTrailer.clear()
         listTrailer.addAll(data)
         notifyDataSetChanged()
     }

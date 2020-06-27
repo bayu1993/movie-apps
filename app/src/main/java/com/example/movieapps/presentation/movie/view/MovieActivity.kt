@@ -16,6 +16,7 @@ import com.example.movieapps.presentation.detail.view.DetailMovieActivity.Compan
 import com.example.movieapps.presentation.genre.view.MovieView
 import com.example.movieapps.presentation.movie.adapter.MovieAdapter
 import com.example.movieapps.presentation.movie.presenter.MoviePresenter
+import com.example.movieapps.utils.EndlessScrollListener
 import com.example.movieapps.utils.gone
 import com.example.movieapps.utils.invisible
 import com.example.movieapps.utils.visible
@@ -28,6 +29,7 @@ class MovieActivity : AppCompatActivity(), MovieView<MovieResponse> {
     private lateinit var presenter: MoviePresenter
     private lateinit var adapter: MovieAdapter
     private var id: Int? = 0
+    private var pages = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +44,7 @@ class MovieActivity : AppCompatActivity(), MovieView<MovieResponse> {
                 supportActionBar?.title = it.name
             }
             presenter = MoviePresenter(MovieRepo(), this)
-            presenter.getMoviesByGenre(1, id.toString())
+            presenter.getMoviesByGenre(pages, id.toString())
         } else finish()
 
         adapter = MovieAdapter {
@@ -54,6 +56,7 @@ class MovieActivity : AppCompatActivity(), MovieView<MovieResponse> {
 
         rv_movie.layoutManager = LinearLayoutManager(this)
         rv_movie.adapter = adapter
+        rv_movie.addOnScrollListener(scrollData())
     }
 
     override fun onShow() {
@@ -69,7 +72,7 @@ class MovieActivity : AppCompatActivity(), MovieView<MovieResponse> {
     override fun onError(error: Throwable) {
         Snackbar.make(rv_movie, error.localizedMessage, Snackbar.LENGTH_INDEFINITE)
             .setAction("Retry") {
-                presenter.getMoviesByGenre(1, id.toString())
+                presenter.getMoviesByGenre(pages, id.toString())
             }.show()
         Log.d("movieapps", "error movieactivity >> ${error.localizedMessage}")
     }
@@ -77,6 +80,13 @@ class MovieActivity : AppCompatActivity(), MovieView<MovieResponse> {
     override fun onSuccess(data: MovieResponse) {
         Log.d("movieapps", "data movie movieactivity >> ${Gson().toJsonTree(data)}")
         adapter.setData(data.results as MutableList<Movie>)
+    }
+
+    private fun scrollData() = object : EndlessScrollListener() {
+        override fun onloadMore() {
+            pages++
+            presenter.getMoviesByGenre(pages, id.toString())
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -13,6 +13,7 @@ import com.example.movieapps.presentation.detail.adapter.GenreAdapter
 import com.example.movieapps.presentation.detail.adapter.MovieReviewAdapter
 import com.example.movieapps.presentation.detail.presenter.DetailMoviePresenter
 import com.example.movieapps.presentation.genre.view.MovieView
+import com.example.movieapps.utils.EndlessScrollListener
 import com.example.movieapps.utils.displayDate
 import com.example.movieapps.utils.gone
 import com.example.movieapps.utils.visible
@@ -29,6 +30,7 @@ class DetailMovieActivity : AppCompatActivity(), MovieView<MovieDetailResponse>,
     private lateinit var presenter: DetailMoviePresenter
     private lateinit var adapter: GenreAdapter
     private lateinit var movieReviewAdapter: MovieReviewAdapter
+    private var pages = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,7 @@ class DetailMovieActivity : AppCompatActivity(), MovieView<MovieDetailResponse>,
             id = intent.getIntExtra(EXTRA_MOVIE_ID, 0)
             presenter = DetailMoviePresenter()
             presenter.getMovieDetail(id, MovieRepo(), this)
-            presenter.getMovieReview(id, 1, MovieRepo(),this)
+            presenter.getMovieReview(id, pages, MovieRepo(), this)
         } else finish()
 
         adapter = GenreAdapter()
@@ -48,8 +50,9 @@ class DetailMovieActivity : AppCompatActivity(), MovieView<MovieDetailResponse>,
 
         movieReviewAdapter = MovieReviewAdapter()
         rv_review.setHasFixedSize(true)
-        rv_review.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false)
+        rv_review.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         rv_review.adapter = movieReviewAdapter
+        rv_review.addOnScrollListener(scrollData())
 
     }
 
@@ -71,7 +74,7 @@ class DetailMovieActivity : AppCompatActivity(), MovieView<MovieDetailResponse>,
         Log.d("movieapps", "detail movie error: ${Gson().toJsonTree(error)}")
         Snackbar.make(ypv_video, "Error : ${error.localizedMessage}", Snackbar.LENGTH_INDEFINITE).setAction("Retry") {
             presenter.getMovieDetail(id, MovieRepo(), this)
-            presenter.getMovieReview(id, 1, MovieRepo(),this)
+            presenter.getMovieReview(id, 1, MovieRepo(), this)
         }.show()
     }
 
@@ -84,7 +87,7 @@ class DetailMovieActivity : AppCompatActivity(), MovieView<MovieDetailResponse>,
             }
         }, true)
         tv_give_rate.setOnClickListener {
-            Snackbar.make(it,"Sorry, this feature is not ready", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(it, "Sorry, this feature is not ready", Snackbar.LENGTH_SHORT).show()
         }
         tv_title_detail.text = data.title
         tv_lang.text = "${data.original_language}"
@@ -123,6 +126,15 @@ class DetailMovieActivity : AppCompatActivity(), MovieView<MovieDetailResponse>,
         movieReviewAdapter.setData(data.results)
         Log.d("movieapps", "detail movie data review: ${Gson().toJsonTree(data)}")
     }
+
+    private fun scrollData() = object : EndlessScrollListener() {
+        override fun onloadMore() {
+            pages++
+            presenter.getMovieReview(id, pages, MovieRepo(), this@DetailMovieActivity)
+        }
+
+    }
+
 
     companion object {
         const val EXTRA_MOVIE_ID = "EXTRA_MOVIE_ID"

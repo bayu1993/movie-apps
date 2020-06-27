@@ -28,7 +28,6 @@ class MovieAdapter(private val callback: (Movie) -> Unit) : RecyclerView.Adapter
     }
 
     fun setData(data: MutableList<Movie>) {
-        movieList.clear()
         movieList.addAll(data)
         notifyDataSetChanged()
     }
